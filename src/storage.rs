@@ -4,8 +4,8 @@ use crate::file::File;
 use std::path::{Path, PathBuf};
 
 pub struct Storage {
-    base_directory: String,
-    disk: String,
+    // base_directory: String,
+    // disk: String,
 
     config: Box<dyn StorageAdapterConfig>
 }
@@ -51,41 +51,40 @@ impl Default for Storage {
         let config = Box::new(adapter_config);
 
         Storage {
-            base_directory: Storage::get_default_base_directory(),
-            disk: "disk".to_string(),
+            // base_directory: Storage::get_default_base_directory(),
+            // disk: "disk".to_string(),
             config,
         }
     }
 }
 
 impl Storage {
-    pub fn new<T : StorageAdapter + 'static>(conf: T) -> Storage {
-
+    pub fn new<T : StorageAdapterConfig + 'static>(conf: T) -> Storage {
         let config = Box::new(conf);
 
         Storage {
-            base_directory: dir,
-            disk: "/".to_string(),
+            // base_directory: "base_dir_string".to_string(),
+            // disk: "/".to_string(),
             config,
         }
     }
 
-    pub fn old_new(config: &StorageConfig) -> Storage {
-
-        let dir = match &config.base_directory {
-            None => Storage::get_default_base_directory(),
-            Some(dir) => dir.to_string(),
-        };
-
-        let adapter_config = StorageAdapterConfigToBeRemoved{};
-        let config = Box::new(adapter_config);
-
-        Storage {
-            base_directory: dir,
-            disk: "/".to_string(),
-            config,
-        }
-    }
+    // pub fn old_new(config: &StorageConfig) -> Storage {
+    //
+    //     let dir = match &config.base_directory {
+    //         None => Storage::get_default_base_directory(),
+    //         Some(dir) => dir.to_string(),
+    //     };
+    //
+    //     let adapter_config = StorageAdapterConfigToBeRemoved{};
+    //     let config = Box::new(adapter_config);
+    //
+    //     Storage {
+    //         base_directory: dir,
+    //         disk: "/".to_string(),
+    //         config,
+    //     }
+    // }
 
     fn get_default_base_directory() -> String {
         // @note it should be different for each driver
@@ -108,7 +107,8 @@ impl Storage {
     }
 
     fn to_base_path(&self) -> &Path {
-        Path::new(&self.base_directory)
+        let x = "/Users/thearyanahmed/rusted";
+        Path::new(x)
     }
 
     pub fn dir_exists(&self, path: String) -> bool {
@@ -118,14 +118,9 @@ impl Storage {
     }
 
     pub fn make_base_dir(&mut self, path: String) -> &Storage {
-        self.base_directory = path;
+        // self.base_directory = path;
 
         &*self
-    }
-
-    // @todo delete
-    pub fn get_root(&self) {
-        println!("root: {}",self.base_directory)
     }
 
     pub fn disk(&mut self) -> &mut Storage {
@@ -182,7 +177,7 @@ impl Storage {
     }
 
     pub fn all_directories(&self) -> &str {
-        "list of all direcotires, from a root path"
+        "list of all directories, from a root path"
     }
 
     pub fn delete_directory(&self) -> bool {

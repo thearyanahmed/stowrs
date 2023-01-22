@@ -10,13 +10,11 @@ fn main() {
 
     let conf = StorageAdapterConfigToBeRemoved{};
 
-    let mut storage = Storage::new(&conf);
+    let mut storage = Storage::new(conf);
 
     println!("storage exists: {}",storage.dir_exists("examples".to_string()));
 
     let _= storage.make_base_dir("/Users/thearyanahmed/rusted".to_string());
-
-    storage.get_root();
 
     let _demo_storage_config = DemoStorageAdapterConfig{};
     let s3_storage_config = S3StorageAdapterConfig{};
