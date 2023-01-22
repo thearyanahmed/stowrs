@@ -6,15 +6,25 @@ use std::path::{Path, PathBuf};
 pub struct Storage {
     base_directory: String,
     disk: String,
+
+    config: Box<dyn StorageAdapterConfig>
 }
 
 pub trait StorageAdapter {
     fn dir_exists(&self, path: String) -> bool;
 }
 
+pub trait StorageAdapterConfig {}
+
 pub struct StorageConfig {
     pub base_directory: Option<String>,
     // pub disk_driver: dyn StorageAdapter,
+}
+
+pub struct StorageAdapterConfigToBeRemoved {}
+
+impl StorageAdapterConfig for StorageAdapterConfigToBeRemoved {
+
 }
 
 impl Default for StorageConfig {
@@ -36,9 +46,14 @@ impl StorageConfig {
 
 impl Default for Storage {
     fn default() -> Self {
+
+        let adapter_config = StorageAdapterConfigToBeRemoved{};
+        let config = Box::new(adapter_config);
+
         Storage {
             base_directory: Storage::get_default_base_directory(),
             disk: "disk".to_string(),
+            config,
         }
     }
 }
@@ -51,9 +66,13 @@ impl Storage {
             Some(dir) => dir.to_string(),
         };
 
+        let adapter_config = StorageAdapterConfigToBeRemoved{};
+        let config = Box::new(adapter_config);
+
         Storage {
             base_directory: dir,
             disk: "/".to_string(),
+            config,
         }
     }
 
