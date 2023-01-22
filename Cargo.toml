@@ -1,12 +1,12 @@
 [package]
-name = "buckets"
+name = "stowrs"
+# 'stow' means to pack or store (an object) carefully and neatly. the name of the package is "stow-rs". 
 version = "0.1.0"
 edition = "2021"
 
 [lib]
 path = "src/lib.rs"
-name = "buckets"
+name = "stowrs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-
