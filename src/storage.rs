@@ -4,9 +4,6 @@ use crate::file::File;
 use std::path::{Path, PathBuf};
 
 pub struct Storage {
-    // base_directory: String,
-    // disk: String,
-
     config: Box<dyn StorageAdapterConfig>
 }
 
@@ -16,33 +13,9 @@ pub trait StorageAdapter {
 
 pub trait StorageAdapterConfig {}
 
-pub struct StorageConfig {
-    pub base_directory: Option<String>,
-    // pub disk_driver: dyn StorageAdapter,
-}
-
 pub struct StorageAdapterConfigToBeRemoved {}
 
-impl StorageAdapterConfig for StorageAdapterConfigToBeRemoved {
-
-}
-
-impl Default for StorageConfig {
-    fn default() -> Self {
-        StorageConfig {
-            base_directory: None,
-        }
-    }
-}
-
-impl StorageConfig {
-    pub fn base_dir(&mut self, path: String) -> &mut StorageConfig {
-        self.base_directory =  Some(path);
-
-        &mut *self
-    }
-}
-
+impl StorageAdapterConfig for StorageAdapterConfigToBeRemoved {}
 
 impl Default for Storage {
     fn default() -> Self {
