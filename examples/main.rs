@@ -3,12 +3,11 @@ use stowrs::storage::Storage;
 fn main() {
     println!("running example main");
 
-    let storage = Storage::default();
+    let mut storage = Storage::default();
 
-    match storage.dir_exists("hello".to_string()) {
-        Ok(_) => {
-            println!("exists")
-        }
-        Err(err) => println!("{}", err.to_string())
-    }
+    println!("storage exists: {}",storage.dir_exists("/Users/thearyanahmed/rusted/stowrs".to_string()));
+
+    let _= storage.root("/Users/thearyanahmed/rusted".to_string());
+
+    storage.get_root()
 }

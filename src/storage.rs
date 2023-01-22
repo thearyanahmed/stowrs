@@ -1,9 +1,11 @@
+use std::env;
 use crate::errors::DirectoryError;
 use crate::file::File;
+use std::path::Path;
+
 
 pub struct Storage {
     root: String,
-    dir_separator: String,
     disk: String,
 }
 
@@ -11,16 +13,38 @@ pub struct Storage {
 impl Default for Storage {
     fn default() -> Self {
         Storage {
-            root: "()".to_string(),
-            dir_separator: "".to_string(),
+            root: Storage::get_default_root_dir(),
             disk: "disk".to_string(),
         }
     }
+
 }
 
 impl Storage {
     pub fn new() -> Storage {
         Storage::default() // @note for now only
+    }
+
+    fn get_default_root_dir() -> String {
+        match env::current_dir() {
+            Ok(path_buf) => {
+                match path_buf.to_str() {
+                    None => "/".to_string(),
+                    Some(path_str) => path_str.to_string()
+                }
+            },
+            Err(_) => { "/".to_string() },
+        }
+    }
+
+    pub fn root(&mut self, path: String) -> &Storage {
+        self.root = path;
+
+        &*self
+    }
+
+    pub fn get_root(&self) {
+        println!("root: {}",self.root)
     }
 
     pub fn disk(&mut self) -> &mut Storage {
@@ -36,8 +60,8 @@ impl Storage {
         println!("looking for {}",name)
     }
 
-    pub fn dir_exists(&self, name: String) -> Result<bool, DirectoryError> {
-        Err(DirectoryError::InvalidPermissions)
+    pub fn dir_exists(&self, path: String) -> bool {
+        Path::new(&path).is_dir()
     }
 
     pub fn exists(&self, name: String) -> Result<bool, DirectoryError> {
