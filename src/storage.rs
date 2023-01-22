@@ -5,7 +5,7 @@ use std::path::Path;
 
 
 pub struct Storage {
-    root: String,
+    base_directory: String,
     disk: String,
 }
 
@@ -13,7 +13,7 @@ pub struct Storage {
 impl Default for Storage {
     fn default() -> Self {
         Storage {
-            root: Storage::get_default_root_dir(),
+            base_directory: Storage::get_default_base_directory(),
             disk: "disk".to_string(),
         }
     }
@@ -25,7 +25,7 @@ impl Storage {
         Storage::default() // @note for now only
     }
 
-    fn get_default_root_dir() -> String {
+    fn get_default_base_directory() -> String {
         match env::current_dir() {
             Ok(path_buf) => {
                 match path_buf.to_str() {
@@ -38,13 +38,13 @@ impl Storage {
     }
 
     pub fn root(&mut self, path: String) -> &Storage {
-        self.root = path;
+        self.base_directory = path;
 
         &*self
     }
 
     pub fn get_root(&self) {
-        println!("root: {}",self.root)
+        println!("root: {}",self.base_directory)
     }
 
     pub fn disk(&mut self) -> &mut Storage {
