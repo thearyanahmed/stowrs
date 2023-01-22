@@ -1,10 +1,7 @@
-use std::borrow::{Borrow, BorrowMut};
 use std::env;
-use std::fmt::format;
 use crate::errors::DirectoryError;
 use crate::file::File;
 use std::path::{Path, PathBuf};
-
 
 pub struct Storage {
     base_directory: String,
@@ -12,7 +9,7 @@ pub struct Storage {
 }
 
 pub trait StorageAdapter {
-
+    fn dir_exists(&self, path: String) -> bool;
 }
 
 pub struct StorageConfig {
@@ -85,6 +82,8 @@ impl Storage {
     }
 
     pub fn dir_exists(&self, path: String) -> bool {
+        // should be something like
+        // self.disk_driver.dir_exist()
         self.get_full_path_buf(path).is_dir()
     }
 
