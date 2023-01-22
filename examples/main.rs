@@ -1,12 +1,14 @@
 use stowrs::{DemoStorageAdapterConfig, Hello, S3StorageAdapterConfig};
-use stowrs::storage::{Storage, StorageConfig};
+use stowrs::storage::{Storage, StorageAdapterConfigToBeRemoved, StorageConfig};
 
 fn main() {
     println!("running example main");
 
-    let mut default_conf = StorageConfig::default();
+    // let mut default_conf = StorageConfig::default();
 
-    let conf = default_conf.base_dir("/Users/thearyanahmed/rusted/stowrs".to_string());
+    // let conf = default_conf.base_dir("/Users/thearyanahmed/rusted/stowrs".to_string());
+
+    let conf = StorageAdapterConfigToBeRemoved{};
 
     let mut storage = Storage::new(&conf);
 

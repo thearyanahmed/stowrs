@@ -59,7 +59,18 @@ impl Default for Storage {
 }
 
 impl Storage {
-    pub fn new(config: &StorageConfig) -> Storage {
+    pub fn new<T : StorageAdapter + 'static>(conf: T) -> Storage {
+
+        let config = Box::new(conf);
+
+        Storage {
+            base_directory: dir,
+            disk: "/".to_string(),
+            config,
+        }
+    }
+
+    pub fn old_new(config: &StorageConfig) -> Storage {
 
         let dir = match &config.base_directory {
             None => Storage::get_default_base_directory(),
