@@ -34,35 +34,7 @@ impl Storage {
         }
     }
 
-    // pub fn old_new(config: &StorageConfig) -> Storage {
-    //
-    //     let dir = match &config.base_directory {
-    //         None => Storage::get_default_base_directory(),
-    //         Some(dir) => dir.to_string(),
-    //     };
-    //
-    //     let adapter_config = StorageAdapterConfigToBeRemoved{};
-    //     let config = Box::new(adapter_config);
-    //
-    //     Storage {
-    //         base_directory: dir,
-    //         disk: "/".to_string(),
-    //         config,
-    //     }
-    // }
 
-    fn get_default_base_directory() -> String {
-        // @note it should be different for each driver
-        match env::current_dir() {
-            Ok(path_buf) => {
-                match path_buf.to_str() {
-                    None => "/".to_string(),
-                    Some(path_str) => path_str.to_string()
-                }
-            },
-            Err(_) => "/".to_string(),
-        }
-    }
 
     fn get_full_path_buf(&self, path: String) -> PathBuf {
         let path_buf = self.to_base_path();
