@@ -1,5 +1,6 @@
 use std::any::Any;
 use std::env;
+use std::path::{Path, PathBuf};
 use crate::storage::{StorageAdapter, StorageAdapterConfig};
 
 pub struct LocalFileSystemAdapterConfig {
@@ -29,19 +30,30 @@ impl LocalFileSystemAdapter {
         }
     }
 
+    // @ not sure if we need it
     fn get_base_dir(&self) -> String {
         match env::current_dir() {
             Ok(path_buf) => {
                 match path_buf.to_str() {
-                    None => LocalFileSystemAdapter::get_fallback_base_dir(),
+                    None => self.get_fallback_base_dir(),
                     Some(path_str) => path_str.to_string()
                 }
             },
-            Err(_) => LocalFileSystemAdapter::get_fallback_base_dir(),
+            Err(_) => self.get_fallback_base_dir(),
         }
     }
 
-    fn get_fallback_base_dir() -> String {
+    fn get_full_path_buf(&self, path: String) -> PathBuf {
+        let path_buf = self.to_base_path();
+
+        path_buf.join(&path)
+    }
+
+    fn to_base_path(&self) -> &Path {
+        Path::new(&self.base_dir)
+    }
+
+    fn get_fallback_base_dir(&self) -> String {
         "/".to_string()
     }
 }
