@@ -1,47 +1,55 @@
+use std::any::Any;
+use std::collections::HashMap;
 use std::env;
 use crate::errors::DirectoryError;
 use crate::file::File;
 use std::path::{Path, PathBuf};
+use crate::adapters::local_file_system_adapter::{LocalFileSystemAdapter, LocalFileSystemAdapterConfig};
+use crate::adapters::s3_file_system_adapter::S3FileSystemAdapter;
 
 pub struct Storage {
-    config: Box<dyn StorageAdapterConfig>
+    // config: Box<dyn StorageAdapterConfig>,
+    driver: Box<dyn StorageAdapter>,
 }
 
 pub trait StorageAdapter {
     fn dir_exists(&self, path: String) -> bool;
 }
 
-pub trait StorageAdapterConfig {}
-
-pub struct StorageAdapterConfigToBeRemoved {}
-
-impl StorageAdapterConfig for StorageAdapterConfigToBeRemoved {}
-
-impl Default for Storage {
-    fn default() -> Self {
-
-        let adapter_config = StorageAdapterConfigToBeRemoved{};
-        let config = Box::new(adapter_config);
-
-        Storage {
-            // base_directory: Storage::get_default_base_directory(),
-            // disk: "disk".to_string(),
-            config,
-        }
-    }
+pub trait StorageAdapterConfig {
+    fn as_any(&self) -> &dyn Any;
+    fn name(&self) -> String;
 }
 
 impl Storage {
-    pub fn new<T : StorageAdapterConfig + 'static>(conf: T) -> Storage {
-        let config = Box::new(conf);
+    pub fn new<T : StorageAdapterConfig + 'static>(config: T) -> Storage {
+        // let config = Box::new(conf);
+
+        // let adapter = LocalFileSystemAdapter::new(&config);
+        // let hard_coded_driver = Box::new(adapter);
+
+        let hard_coded_driver = Storage::get_adapter("local", &config);
 
         Storage {
-            // base_directory: "base_dir_string".to_string(),
-            // disk: "/".to_string(),
-            config,
+            driver: hard_coded_driver,
         }
     }
 
+
+    fn get_adapter(name: &str, config: &dyn Any) -> Box<dyn StorageAdapter> {
+        match name {
+            "local" => {
+                Box::new(LocalFileSystemAdapter::new(config))
+            },
+            "s3" => {
+                Box::new(S3FileSystemAdapter::new(config))
+            },
+            _ => {
+                println!("falling back to the default one");
+                Box::new(LocalFileSystemAdapter::new(config))
+            }
+        }
+    }
     // pub fn old_new(config: &StorageConfig) -> Storage {
     //
     //     let dir = match &config.base_directory {
@@ -87,7 +95,11 @@ impl Storage {
     pub fn dir_exists(&self, path: String) -> bool {
         // should be something like
         // self.disk_driver.dir_exist()
-        self.get_full_path_buf(path).is_dir()
+        println!("HELLO WORLD DIR_EXISTS");
+
+        self.driver.dir_exists(path)
+
+        // self.get_full_path_buf(path).is_dir()
     }
 
     pub fn make_base_dir(&mut self, path: String) -> &Storage {
