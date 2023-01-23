@@ -34,6 +34,18 @@ impl Storage {
         }
     }
 
+    pub fn init(name: String, list_of_drivers: Vec<Box<dyn StorageAdapter>>) {
+        println!("name: {}",name);
+
+        for adapter in list_of_drivers {
+            if adapter.disk_name() == name {
+                println!("received desired disk: {}", name);
+            }
+
+            println!("Disk: {}", adapter.disk_name());
+        }
+    }
+
     pub fn dir_exists(&self, path: String) -> bool {
         self.driver.dir_exists(path)
     }
