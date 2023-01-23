@@ -8,48 +8,32 @@ use crate::adapters::local_file_system_adapter::{LocalFileSystemAdapter, LocalFi
 use crate::adapters::s3_file_system_adapter::S3FileSystemAdapter;
 
 pub struct Storage {
-    // config: Box<dyn StorageAdapterConfig>,
     driver: Box<dyn StorageAdapter>,
+
+    // @note
+    // for future reference where we want to allow usage of
+    // multiple disks at runtime without having to recreate
+    // the Storage instance everytime,
+    // https://github.com/dtolnay/dyn-clone
+    // drivers: Hashmap<&str, Box<dyn StorageAdapter>>
 }
 
 pub trait StorageAdapter {
+    fn disk_name(&self) -> String;
     fn dir_exists(&self, path: String) -> bool;
 }
 
 pub trait StorageAdapterConfig {
     fn as_any(&self) -> &dyn Any;
-    fn name(&self) -> String;
 }
 
 impl Storage {
-    pub fn new<T : StorageAdapterConfig + 'static>(config: T) -> Storage {
-        // let config = Box::new(conf);
-
-        // let adapter = LocalFileSystemAdapter::new(&config);
-        // let hard_coded_driver = Box::new(adapter);
-
-        let hard_coded_driver = Storage::get_adapter("local", &config);
-
+    pub fn new(driver: Box<dyn StorageAdapter>) -> Storage {
         Storage {
-            driver: hard_coded_driver,
+            driver,
         }
     }
 
-
-    fn get_adapter(name: &str, config: &dyn Any) -> Box<dyn StorageAdapter> {
-        match name {
-            "local" => {
-                Box::new(LocalFileSystemAdapter::new(config))
-            },
-            "s3" => {
-                Box::new(S3FileSystemAdapter::new(config))
-            },
-            _ => {
-                println!("falling back to the default one");
-                Box::new(LocalFileSystemAdapter::new(config))
-            }
-        }
-    }
     // pub fn old_new(config: &StorageConfig) -> Storage {
     //
     //     let dir = match &config.base_directory {
@@ -69,7 +53,6 @@ impl Storage {
 
     fn get_default_base_directory() -> String {
         // @note it should be different for each driver
-
         match env::current_dir() {
             Ok(path_buf) => {
                 match path_buf.to_str() {
@@ -93,13 +76,7 @@ impl Storage {
     }
 
     pub fn dir_exists(&self, path: String) -> bool {
-        // should be something like
-        // self.disk_driver.dir_exist()
-        println!("HELLO WORLD DIR_EXISTS");
-
         self.driver.dir_exists(path)
-
-        // self.get_full_path_buf(path).is_dir()
     }
 
     pub fn make_base_dir(&mut self, path: String) -> &Storage {

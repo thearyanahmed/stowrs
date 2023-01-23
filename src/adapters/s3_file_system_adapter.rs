@@ -9,10 +9,6 @@ impl StorageAdapterConfig for S3FileSystemAdapterConfig {
     fn as_any(&self) -> &dyn Any {
         self
     }
-
-    fn name(&self) -> String {
-        "s3".to_string()
-    }
 }
 
 pub struct S3FileSystemAdapter {
@@ -33,6 +29,10 @@ impl S3FileSystemAdapter {
 }
 
 impl StorageAdapter for S3FileSystemAdapter {
+    fn disk_name(&self) -> String {
+        "s3".to_string()
+    }
+
     fn dir_exists(&self, path: String) -> bool {
         println!("from S3FileSystemAdapter impl block");
         false

@@ -9,10 +9,6 @@ impl StorageAdapterConfig for LocalFileSystemAdapterConfig {
     fn as_any(&self) -> &dyn Any {
         self
     }
-
-    fn name(&self) -> String {
-        "local".to_string()
-    }
 }
 
 pub struct LocalFileSystemAdapter {
@@ -33,6 +29,10 @@ impl LocalFileSystemAdapter {
 }
 
 impl StorageAdapter for LocalFileSystemAdapter {
+    fn disk_name(&self) -> String {
+        "local".to_string()
+    }
+
     fn dir_exists(&self, path: String) -> bool {
         println!("from LocalFileSystemAdapter impl block");
         false
