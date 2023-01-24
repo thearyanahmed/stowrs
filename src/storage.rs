@@ -1,11 +1,13 @@
+use crate::adapters::local_file_system_adapter::{
+    LocalFileSystemAdapter, LocalFileSystemAdapterConfig,
+};
+use crate::adapters::s3_file_system_adapter::S3FileSystemAdapter;
+use crate::errors::DirectoryError;
+use crate::file::File;
 use std::any::Any;
 use std::collections::HashMap;
 use std::env;
-use crate::errors::DirectoryError;
-use crate::file::File;
 use std::path::{Path, PathBuf};
-use crate::adapters::local_file_system_adapter::{LocalFileSystemAdapter, LocalFileSystemAdapterConfig};
-use crate::adapters::s3_file_system_adapter::S3FileSystemAdapter;
 
 pub struct Storage {
     driver: Box<dyn StorageAdapter>,
@@ -16,6 +18,9 @@ pub struct Storage {
     // the Storage instance everytime,
     // https://github.com/dtolnay/dyn-clone
     // drivers: Hashmap<&str, Box<dyn StorageAdapter>>
+
+    // original driver will be used
+    original_driver: String,
 }
 
 pub trait StorageAdapter {
@@ -31,11 +36,12 @@ impl Storage {
     pub fn new(driver: Box<dyn StorageAdapter>) -> Storage {
         Storage {
             driver,
+            original_driver: "".to_string(),
         }
     }
 
     pub fn init(name: String, list_of_drivers: Vec<Box<dyn StorageAdapter>>) {
-        println!("name: {}",name);
+        println!("name: {}", name);
 
         for adapter in list_of_drivers {
             if adapter.disk_name() == name {
@@ -118,7 +124,6 @@ impl Storage {
     //     false
     // }
 }
-
 
 #[cfg(test)]
 mod tests {

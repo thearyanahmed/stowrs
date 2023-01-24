@@ -29,7 +29,6 @@ fn main() {
 
     let storage = Storage::new(helpers::get_adapter("local",&local_adapter_config));
 
-
     let v : Vec<Box<dyn StorageAdapter>> = vec![
         Box::new(LocalFileSystemAdapter::new(&local_adapter_config)),
         Box::new(S3FileSystemAdapter::new(&s3_storage_config)),

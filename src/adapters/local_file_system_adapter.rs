@@ -21,7 +21,9 @@ impl LocalFileSystemAdapter {
 
     pub fn new(config: &dyn Any) -> LocalFileSystemAdapter {
 
-        let cfg : &LocalFileSystemAdapterConfig = config.downcast_ref::<LocalFileSystemAdapterConfig>().expect("failed to downcast");
+        let cfg : &LocalFileSystemAdapterConfig = config
+            .downcast_ref::<LocalFileSystemAdapterConfig>()
+            .expect("failed to downcast");
 
         let base_dir = &cfg.base_directory;
 
