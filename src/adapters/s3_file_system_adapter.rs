@@ -1,5 +1,5 @@
-use std::any::Any;
 use crate::storage::{StorageAdapter, StorageAdapterConfig};
+use std::any::Any;
 
 pub struct S3FileSystemAdapterConfig {
     pub bucket: String,
@@ -12,13 +12,14 @@ impl StorageAdapterConfig for S3FileSystemAdapterConfig {
 }
 
 pub struct S3FileSystemAdapter {
-    bucket: String
+    bucket: String,
 }
 
 impl S3FileSystemAdapter {
     pub fn new(config: &dyn Any) -> S3FileSystemAdapter {
-
-        let cfg : &S3FileSystemAdapterConfig = config.downcast_ref::<S3FileSystemAdapterConfig>().expect("failed to downcast");
+        let cfg: &S3FileSystemAdapterConfig = config
+            .downcast_ref::<S3FileSystemAdapterConfig>()
+            .expect("failed to downcast");
 
         let base_dir = &cfg.bucket;
 

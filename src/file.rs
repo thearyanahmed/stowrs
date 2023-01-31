@@ -1,6 +1,4 @@
-pub struct File {
-
-}
+pub struct File {}
 
 impl File {
     pub fn size(&self) -> i64 {

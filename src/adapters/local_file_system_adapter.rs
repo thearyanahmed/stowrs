@@ -1,7 +1,7 @@
+use crate::storage::{StorageAdapter, StorageAdapterConfig};
 use std::any::Any;
 use std::env;
 use std::path::{Path, PathBuf};
-use crate::storage::{StorageAdapter, StorageAdapterConfig};
 
 pub struct LocalFileSystemAdapterConfig {
     pub base_directory: String,
@@ -14,14 +14,12 @@ impl StorageAdapterConfig for LocalFileSystemAdapterConfig {
 }
 
 pub struct LocalFileSystemAdapter {
-    base_dir: String
+    base_dir: String,
 }
 
 impl LocalFileSystemAdapter {
-
     pub fn new(config: &dyn Any) -> LocalFileSystemAdapter {
-
-        let cfg : &LocalFileSystemAdapterConfig = config
+        let cfg: &LocalFileSystemAdapterConfig = config
             .downcast_ref::<LocalFileSystemAdapterConfig>()
             .expect("failed to downcast");
 
@@ -35,11 +33,9 @@ impl LocalFileSystemAdapter {
     // @ not sure if we need it
     fn get_base_dir(&self) -> String {
         match env::current_dir() {
-            Ok(path_buf) => {
-                match path_buf.to_str() {
-                    None => self.get_fallback_base_dir(),
-                    Some(path_str) => path_str.to_string()
-                }
+            Ok(path_buf) => match path_buf.to_str() {
+                None => self.get_fallback_base_dir(),
+                Some(path_str) => path_str.to_string(),
             },
             Err(_) => self.get_fallback_base_dir(),
         }
